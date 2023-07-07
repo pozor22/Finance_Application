@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    <link href="{% static 'account/base.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="board">
+        <h4><a href="{% url 'Accounts:accounts' %}">My Accounts</a></h4>
+    </div>
+    <div>
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

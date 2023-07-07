@@ -1,0 +1,26 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+  <div>
+    <h1>Your accounts</h1>
+    {% for account in accounts %}
+      <div>
+        <a href="{% url 'Accounts:account' account.id %}"><h1>{{ account.name }}</h1></a>
+      </div>
+      <div>
+        {% if account.type.id == 1 %}
+        <p>{{ account.quantity_money }} / {{ account.target }}</p>
+        {% else %}
+        {{ account.quantity_money }}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div>
+    <form action="{% url 'Accounts:accounts' %}" method="post">
+    {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Add Account">
+    </form>
+  </div>
+{% endblock %}
