@@ -1,29 +1,35 @@
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.views import View
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
 from .models import Account, Operation
 from .forms import *
 
 
-class AllAccountView(View):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        accounts = Account.objects.filter(user=user)
-        form = CreateAccountForm()
-        context = {
-            'accounts': accounts,
-            'form': form,
-        }
-        return render(request, 'account/AllAccount.html', context)
+class AllAccountView(ListView):
+    model = Account
+    template_name = 'account/AllAccount.html'
+    context_object_name = 'accounts'
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        form = CreateAccountForm(data=request.POST)
-        form.instance.user = user
-        form.save()
-        return HttpResponseRedirect(reverse('Accounts:accounts'))
+    def get_queryset(self):
+        queryset = super(AllAccountView, self).get_queryset()
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+
+class CreateNewAccountView(CreateView):
+    form_class = CreateAccountForm
+    template_name = 'account/CreateAccount.html'
+    success_url = reverse_lazy('Accounts:accounts')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class AccountView(View):
+    template_name = 'account/Account.html'
+
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         form = CreateOperationForm()
@@ -37,7 +43,7 @@ class AccountView(View):
             'operations': operations,
             'form': form,
         }
-        return render(request, 'account/Account.html', context)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']

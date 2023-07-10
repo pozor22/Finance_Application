@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models, router
 from django.contrib.auth.models import User
 from django.db.models.deletion import Collector
@@ -12,6 +13,8 @@ class Type(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
+    # if TypeTransaction == True is a -, if TypeTransaction == True is a +
+    TypeTransaction = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -29,8 +32,9 @@ class Account(models.Model):
 
 
 class Operation(models.Model):
-    price = models.FloatField()
-    date = models.DateTimeField(auto_now_add=True)
+    price = models.FloatField(validators=[MinValueValidator(0)])
+    date = models.DateTimeField()
+    notes = models.CharField(max_length=100, null=True, blank=True)
     account = models.ForeignKey(Account, related_name='account', on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
@@ -38,6 +42,10 @@ class Operation(models.Model):
         account = Account.objects.get(id=self.account.id)
         account.quantity_money = account.quantity_money + self.price
         account.save()
+        # if self.price >= 0:
+        #     self.type_transaction = TypeTransaction.objects.get(id=1)
+        # else:
+        #     self.type_transaction = TypeTransaction.objects.get(id=2)
         return super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):

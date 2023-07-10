@@ -3,6 +3,7 @@
 {% block content %}
   <div>
     <h1>Your accounts</h1>
+    <a href="{% url 'Accounts:CreateAccount' %}"><h1>Add new account</h1></a>
     {% for account in accounts %}
       <div>
         <a href="{% url 'Accounts:account' account.id %}"><h1>{{ account.name }}</h1></a>
@@ -15,12 +16,5 @@
         {% endif %}
       </div>
     {% endfor %}
-  </div>
-  <div>
-    <form action="{% url 'Accounts:accounts' %}" method="post">
-    {% csrf_token %}
-      {{ form }}
-      <input type="submit" value="Add Account">
-    </form>
   </div>
 {% endblock %}

@@ -1,12 +1,16 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+    <div class="board">
+        <h4><a href="{% url 'Accounts:accounts' %}">My Accounts</a></h4>
+        <h4 align="right"><a href="{% url 'users:login' %}">Authorization</a></h4>
+        <h4 align="right"><a href="{% url 'users:registration' %}">Registration</a></h4>
+    </div>
     <div>
         {% block content %} {% endblock %}
     </div>

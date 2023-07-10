@@ -1,6 +1,7 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
+  <h1>Authorization</h1>
   <form action="{% url 'users:login' %}" method="post">
     {% csrf_token %}
     <div>

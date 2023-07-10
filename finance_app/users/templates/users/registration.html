@@ -1,6 +1,7 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
+  <h1>Registration</h1>
   <form action="{% url 'users:registration' %}" method="post">
     {% csrf_token %}
     <div>
