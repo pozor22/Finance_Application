@@ -2,6 +2,9 @@
 
 {% block content %}
   <div>
+    <h1>Total Sum: {{ all_money.quantity_money__sum }}</h1>
+  </div>
+  <div>
     <h1>Your accounts</h1>
     <a href="{% url 'Accounts:CreateAccount' %}"><h1>Add new account</h1></a>
     {% for account in accounts %}
@@ -16,5 +19,13 @@
         {% endif %}
       </div>
     {% endfor %}
+  </div>
+  <div>
+    <h2>Last Operation</h2>
+    <ul>
+      {% for operation in last_operation %}
+        <li>{{ operation.category }}, {{ operation.price }}, {{ operation.date }}</li>
+      {% endfor %}
+    </ul>
   </div>
 {% endblock %}

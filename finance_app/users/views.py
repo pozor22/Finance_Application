@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.views import View
 from .forms import UserForm, LoginUserForm
 from django.contrib import auth
@@ -37,3 +38,8 @@ class LoginUserView(View):
             form = LoginUserForm()
         context = {"form": form}
         return render(request, 'users/login.html', context=context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('Accounts:accounts'))

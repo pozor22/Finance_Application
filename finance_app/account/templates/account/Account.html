@@ -16,7 +16,7 @@
     <form action="{% url 'Accounts:account' account.id %}" method="post">
     {% csrf_token %}
       <div>
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="Add">
       </div>
     </form>

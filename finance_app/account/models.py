@@ -13,7 +13,7 @@ class Type(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
-    # if TypeTransaction == True is a -, if TypeTransaction == True is a +
+    # if TypeTransaction == True is a -, if TypeTransaction == False is a +
     TypeTransaction = models.BooleanField(default=True)
 
     def __str__(self):
@@ -33,24 +33,28 @@ class Account(models.Model):
 
 class Operation(models.Model):
     price = models.FloatField(validators=[MinValueValidator(0)])
-    date = models.DateTimeField()
+    date = models.DateField()
     notes = models.CharField(max_length=100, null=True, blank=True)
     account = models.ForeignKey(Account, related_name='account', on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        account = Account.objects.get(id=self.account.id)
-        account.quantity_money = account.quantity_money + self.price
+        if self.category.TypeTransaction == False:
+            account = Account.objects.get(id=self.account.id)
+            account.quantity_money = account.quantity_money + self.price
+        else:
+            account = Account.objects.get(id=self.account.id)
+            account.quantity_money = account.quantity_money - self.price
         account.save()
-        # if self.price >= 0:
-        #     self.type_transaction = TypeTransaction.objects.get(id=1)
-        # else:
-        #     self.type_transaction = TypeTransaction.objects.get(id=2)
         return super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
-        account = Account.objects.get(id=self.account.id)
-        account.quantity_money = account.quantity_money - self.price
+        if self.category.TypeTransaction == False:
+            account = Account.objects.get(id=self.account.id)
+            account.quantity_money = account.quantity_money - self.price
+        else:
+            account = Account.objects.get(id=self.account.id)
+            account.quantity_money = account.quantity_money + self.price
         account.save()
         if self.pk is None:
             raise ValueError(

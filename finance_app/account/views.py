@@ -1,3 +1,5 @@
+from django.db.models import Sum
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.views import View
 from django.views.generic import ListView, CreateView
@@ -10,6 +12,12 @@ class AllAccountView(ListView):
     model = Account
     template_name = 'account/AllAccount.html'
     context_object_name = 'accounts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['all_money'] = Account.objects.filter(user=self.request.user).aggregate(Sum('quantity_money'))
+        context['last_operation'] = Operation.objects.filter(account__user=self.request.user).order_by('-id')[:3]
+        return context
 
     def get_queryset(self):
         queryset = super(AllAccountView, self).get_queryset()
