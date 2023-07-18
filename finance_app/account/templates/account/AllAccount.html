@@ -2,14 +2,14 @@
 
 {% block content %}
   <div>
-    <h1>Total Sum: {{ all_money.quantity_money__sum }}</h1>
+    <h2>Total Sum: {{ all_money.quantity_money__sum }}</h2>
   </div>
   <div>
     <h1>Your accounts</h1>
-    <a href="{% url 'Accounts:CreateAccount' %}"><h1>Add new account</h1></a>
+    <a href="{% url 'Accounts:CreateAccount' %}"><h2>Add new account</h2></a>
     {% for account in accounts %}
       <div>
-        <a href="{% url 'Accounts:account' account.id %}"><h1>{{ account.name }}</h1></a>
+        <a href="{% url 'Accounts:account' account.id %}"><h2>{{ account.name }}</h2></a>
       </div>
       <div>
         {% if account.type.id == 1 %}
@@ -21,7 +21,14 @@
     {% endfor %}
   </div>
   <div>
-    <h2>Last Operation</h2>
+    <h1>Spending report</h1>
+    <p>Top spending</p>
+    {% for key, value in top_spending.items %}
+        <p>{{ key }}: {{ value }}</p>
+    {% endfor %}
+  </div>
+  <div>
+    <h1>Last Operation</h1>
     <ul>
       {% for operation in last_operation %}
         <li>{{ operation.category }}, {{ operation.price }}, {{ operation.date }}</li>

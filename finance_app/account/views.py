@@ -1,11 +1,11 @@
 from django.db.models import Sum
-from django.http import HttpResponseNotFound
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.views import View
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
-from .models import Account, Operation
-from .forms import *
+from .models import Account, Operation, Category
+from .forms import CreateOperationForm, CreateAccountForm
+from django.db.models import Count
 
 
 class AllAccountView(ListView):
@@ -17,6 +17,26 @@ class AllAccountView(ListView):
         context = super().get_context_data(**kwargs)
         context['all_money'] = Account.objects.filter(user=self.request.user).aggregate(Sum('quantity_money'))
         context['last_operation'] = Operation.objects.filter(account__user=self.request.user).order_by('-id')[:3]
+        top_spending = {}
+        for cat in Category.objects.all():
+            i = Operation.objects.filter(account__user=self.request.user).filter(category=cat).\
+                aggregate(Sum('price'))
+            if i['price__sum'] != None:
+                top_spending[f'{cat}'] = i['price__sum']
+        dict1 = {}
+        keyy = ''
+        maxx = 0
+        for i in range(len(top_spending)):
+            for key, value in top_spending.items():
+                if value >= maxx:
+                    keyy = key
+                    maxx = value
+                    print(keyy)
+            dict1[f'{keyy}'] = maxx
+            del top_spending[keyy]
+            maxx = 0
+            keyy = ''
+        context['top_spending'] = dict1
         return context
 
     def get_queryset(self):
