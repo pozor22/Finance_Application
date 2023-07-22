@@ -121,6 +121,17 @@ class OperationsOneAccountView(View):
         return render(request, self.template_name, context)
 
 
+class CreateOperationView(CreateView):
+    form_class = CreateOperationForm
+    template_name = 'account/CreateOperation.html'
+    success_url = reverse_lazy('Accounts:accounts')
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateOperationView, self).get_context_data(**kwargs)
+        context['form'].fields['account'].queryset = Account.objects.filter(user=self.request.user)
+        return context
+
+
 class CreateNewAccountView(CreateView):
     form_class = CreateAccountForm
     template_name = 'account/CreateAccount.html'
@@ -129,33 +140,6 @@ class CreateNewAccountView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-
-class AccountView(View):
-    template_name = 'account/Account.html'
-
-    def get(self, request, *args, **kwargs):
-        pk = self.kwargs['pk']
-        form = CreateOperationForm()
-        account = Account.objects.get(pk=pk)
-        try:
-            operations = Operation.objects.filter(account__pk=pk).order_by('-date')
-        except:
-            operations = None
-        context = {
-            'account': account,
-            'operations': operations,
-            'form': form,
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-        pk = self.kwargs['pk']
-        form = CreateOperationForm(data=request.POST)
-        account = Account.objects.get(pk=pk)
-        form.instance.account = account
-        form.save()
-        return HttpResponseRedirect(reverse('Accounts:account', args=[account.pk]))
 
 
 class DeleteOperationView(View):

@@ -1,0 +1,17 @@
+{% extends 'account/base.html' %}
+{% block style %}
+  <style>
+    .account{
+      text-align: center;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div>
+    <form action="{% url 'Accounts:CreateOperation' %}" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Add">
+    </form>
+  </div>
+{% endblock %}

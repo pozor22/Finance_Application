@@ -1,15 +1,21 @@
 {% extends 'account/base.html' %}
-
+{% block style %}
+  <style>
+    .account{
+      text-align: center;
+    }
+  </style>
+{% endblock %}
 {% block content %}
-  <div>
+  <div class="account">
     <h2>Total Sum: {{ all_money.quantity_money__sum }}</h2>
   </div>
-  <div>
+  <div class="account">
     <h1>Your accounts</h1>
     <a href="{% url 'Accounts:CreateAccount' %}"><h2>Add new account</h2></a>
     {% for account in accounts %}
       <div>
-        <a href="{% url 'Accounts:account' account.id %}"><h2>{{ account.name }}</h2></a>
+        <a href="{% url 'Accounts:operationsOne' account.id 1 %}"><h2>{{ account.name }}</h2></a>
       </div>
       <div>
         {% if account.type.id == 1 %}
@@ -20,14 +26,14 @@
       </div>
     {% endfor %}
   </div>
-  <div>
+  <div class="account">
     <h1>Spending report</h1>
     <p>Top spending</p>
     {% for key, value in top_spending.items %}
         <p>{{ key }}: {{ value }}</p>
     {% endfor %}
   </div>
-  <div>
+  <div class="account">
     <h1>Last Operation</h1>
     <ul>
       {% for operation in last_operation %}

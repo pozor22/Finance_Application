@@ -3,13 +3,13 @@
   <style>
     .operation{
       padding: 15px;
-      text-align: center
+      text-align: center;
       }
     .total{
-      text-align: center
+      text-align: center;
     }
     .account{
-      text-align: center
+      text-align: center;
     }
   </style>
 {% endblock %}
@@ -38,6 +38,9 @@
         {{ operation.account.name }}
         {{ operation.category }}
         {{ operation.price }}
+        {% if operation.notes != None %}
+          {{ operation.notes }}
+        {% endif %}
       </div>
     {% endfor %}
   </div>

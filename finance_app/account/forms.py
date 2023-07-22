@@ -11,7 +11,7 @@ class CreateOperationForm(forms.ModelForm):
 
     class Meta:
         model = Operation
-        fields = ('price', 'category', 'date',)
+        fields = ('price', 'category', 'notes', 'date', 'account',)
 
 
 class CreateAccountForm(forms.ModelForm):

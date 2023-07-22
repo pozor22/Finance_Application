@@ -28,7 +28,7 @@ class Account(models.Model):
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f'name: {self.name}; user: {self.user}; type: {self.type}'
+        return f'account: {self.name}'
 
 
 class Operation(models.Model):
@@ -67,4 +67,4 @@ class Operation(models.Model):
         return collector.delete()
 
     def __str__(self):
-        return f'account: {self.account}; category: {self.category}; price: {self.price}'
+        return f'account: {self.account}; category: {self.category}; price: {self.price}//// {self.pk}'
