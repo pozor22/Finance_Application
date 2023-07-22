@@ -142,6 +142,13 @@ class CreateNewAccountView(CreateView):
         return super().form_valid(form)
 
 
+class ProfileView(View):
+    template_name = 'account/profile.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+
 class DeleteOperationView(View):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']

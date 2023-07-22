@@ -1,0 +1,13 @@
+{% extends 'account/base.html' %}
+{% block style %}
+  {% load static %}
+  <link href="{% static 'account/profile.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+  <div class="head">
+    <a class="button" href="{% url 'Accounts:accounts' %}">My Accounts</a>
+  </div>
+  <div class="head">
+    <a class="buttonExit" href="{% url 'users:exit' %}">Exit</a>
+  </div>
+{% endblock %}

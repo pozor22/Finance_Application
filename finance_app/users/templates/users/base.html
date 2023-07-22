@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <title>Title</title>
+    {% load static %}
+    <link href="{% static 'users/base.css' %}" rel="stylesheet"/>
+    {% block style %} {% endblock %}
 </head>
 <body>
-    <div class="board">
-        <h4><a href="{% url 'Accounts:accounts' %}">My Accounts</a></h4>
-        <h4 align="right"><a href="{% url 'users:login' %}">Authorization</a></h4>
-        <h4 align="right"><a href="{% url 'users:registration' %}">Registration</a></h4>
+    <div class="head">
+        <a class="button" href="{% url 'Accounts:accounts' %}">My Accounts</a>
+        <a class="button" href="{% url 'users:login' %}">Authorization</a>
+        <a class="button" href="{% url 'users:registration' %}">Registration</a>
     </div>
     <div>
         {% block content %} {% endblock %}

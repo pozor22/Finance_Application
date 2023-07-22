@@ -1,18 +1,21 @@
 {% extends 'users/base.html' %}
-
+{% block style %}
+  {% load static %}
+  <link href="{% static 'users/registration.css' %}" rel="stylesheet"/>
+{% endblock %}
 {% block content %}
-  <h1>Registration</h1>
+  <h1 class="field">Registration</h1>
   <form action="{% url 'users:registration' %}" method="post">
     {% csrf_token %}
-    <div>
+    <div class="field">
       <p>Login</p>
       {{ form.username }}
     </div>
-    <div>
+    <div class="field">
       <p>Password</p>
       {{ form.password }}
     </div>
-    <div>
+    <div class="field">
       <input type="submit" value="Registration">
     </div>
   </form>

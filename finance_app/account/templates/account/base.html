@@ -5,23 +5,6 @@
     <title>Title</title>
     {% load static %}
     <link href="{% static 'account/base.css' %}" rel="stylesheet">
-      <style>
-        a.button {
-        display: inline-block;
-        background: #0B24C7;
-        color: #fff;
-        padding: 12px;
-        border-radius: 3px;
-        text-decoration: none;
-        font-family: Tahoma;
-        font-size: 18px;
-        line-height: 1;
-        font-weight: 100;
-        }
-        .head {
-            text-align: center;
-        }
-      </style>
     {% block style %} {% endblock %}
 </head>
 <body>
@@ -30,8 +13,7 @@
         <a class="button" href="{% url 'Accounts:operations' 1 %}">Operations</a>
         <a class="button" href="{% url 'Accounts:CreateOperation' %}">New Operation</a>
         <a class="button" href="{% url 'users:registration' %}">Budgets</a>
-        <a class="button" href="{% url 'users:registration' %}">Profile</a>
-        <a class="button" href="{% url 'users:exit' %}">Exit</a>
+        <a class="button" href="{% url 'Accounts:profile' %}">Profile</a>
     </div>
     <div>
         {% block content %} {% endblock %}

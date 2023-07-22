@@ -1,18 +1,21 @@
 {% extends 'users/base.html' %}
-
+{% block style %}
+  {% load static %}
+  <link href="{% static 'users/login.css' %}" rel="stylesheet"/>
+{% endblock %}
 {% block content %}
-  <h1>Authorization</h1>
+  <h1 class="field">Authorization</h1>
   <form action="{% url 'users:login' %}" method="post">
     {% csrf_token %}
-    <div>
+    <div class="field">
       <p>Login</p>
       {{ form.username }}
     </div>
-    <div>
+    <div class="field">
       <p>Password</p>
       {{ form.password }}
     </div>
-    <div>
+    <div class="field">
       <input type="submit" value="Login">
     </div>
   </form>
