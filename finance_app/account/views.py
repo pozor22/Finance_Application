@@ -5,7 +5,8 @@ from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from .models import Account, Operation, Category
 from .forms import CreateOperationForm, CreateAccountForm
-from django.db.models import Count
+from datetime import datetime
+from calendar import monthrange
 
 
 class AllAccountView(ListView):
@@ -18,7 +19,7 @@ class AllAccountView(ListView):
         context['all_money'] = Account.objects.filter(user=self.request.user).aggregate(Sum('quantity_money'))
         context['last_operation'] = Operation.objects.filter(account__user=self.request.user).order_by('-id')[:3]
         top_spending = {}
-        for cat in Category.objects.all():
+        for cat in Category.objects.filter(TypeTransaction=True):
             i = Operation.objects.filter(account__user=self.request.user).filter(category=cat).\
                 aggregate(Sum('price'))
             if i['price__sum'] != None:
@@ -43,6 +44,81 @@ class AllAccountView(ListView):
         queryset = super(AllAccountView, self).get_queryset()
         queryset = queryset.filter(user=self.request.user)
         return queryset
+
+
+# time = 1 all operations, time = 2 operations in this month, time = 3 operations in this month - 1
+class AllOperationsView(ListView):
+    model = Operation
+    template_name = 'account/Operations.html'
+    context_object_name = 'operations'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['all_money'] = Account.objects.filter(user=self.request.user).aggregate(Sum('quantity_money'))
+        context['all_account'] = Account.objects.filter(user=self.request.user)
+        return context
+
+    def get_queryset(self):
+        time = self.kwargs['time']
+        queryset = None
+        if time == 1:
+            queryset = super(AllOperationsView, self).get_queryset()
+            queryset = queryset.filter(account__user=self.request.user).order_by('-id')
+        elif time == 2:
+            today = datetime.today()
+            last = monthrange(today.year, today.month)
+            first = datetime(today.year, today.month, last[0]).strftime('%Y-%m-%d')
+            last = datetime(today.year, today.month, last[1]).strftime('%Y-%m-%d')
+            queryset = super(AllOperationsView, self).get_queryset()
+            queryset = queryset.filter(account__user=self.request.user).\
+                filter(date__range=[first, last]).order_by('-id')
+        elif time == 3:
+            today = datetime.today()
+            last = monthrange(today.year, today.month - 1)
+            first = datetime(today.year, today.month - 1, last[0]).strftime('%Y-%m-%d')
+            last = datetime(today.year, today.month - 1, last[1]).strftime('%Y-%m-%d')
+            queryset = super(AllOperationsView, self).get_queryset()
+            queryset = queryset.filter(account__user=self.request.user). \
+                filter(date__range=[first, last]).order_by('-id')
+        return queryset
+
+
+class OperationsOneAccountView(View):
+    template_name = 'account/OperationsOneAccount.html'
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        time = self.kwargs['time']
+        if time == 1:
+            context = {
+                'all_money': Account.objects.get(pk=pk),
+                'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
+                .order_by('-id'),
+                'accounts': Account.objects.filter(user=self.request.user),
+            }
+        elif time == 2:
+            today = datetime.today()
+            last = monthrange(today.year, today.month)
+            first = datetime(today.year, today.month, last[0]).strftime('%Y-%m-%d')
+            last = datetime(today.year, today.month, last[1]).strftime('%Y-%m-%d')
+            context = {
+                'all_money': Account.objects.get(pk=pk),
+                'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
+                .filter(date__range=[first, last]).order_by('-id'),
+                'accounts': Account.objects.filter(user=self.request.user),
+            }
+        elif time == 3:
+            today = datetime.today()
+            last = monthrange(today.year, today.month - 1)
+            first = datetime(today.year, today.month - 1, last[0]).strftime('%Y-%m-%d')
+            last = datetime(today.year, today.month - 1, last[1]).strftime('%Y-%m-%d')
+            context = {
+                'all_money': Account.objects.get(pk=pk),
+                'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
+                .filter(date__range=[first, last]).order_by('-id'),
+                'accounts': Account.objects.filter(user=self.request.user),
+            }
+        return render(request, self.template_name, context)
 
 
 class CreateNewAccountView(CreateView):

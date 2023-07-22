@@ -1,0 +1,44 @@
+{% extends 'account/base.html' %}
+{% block style %}
+  <style>
+    .operation{
+      padding: 15px;
+      text-align: center
+      }
+    .total{
+      text-align: center
+    }
+    .account{
+      text-align: center
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="account">
+    <h1>Account: {{ all_money.name }}</h1>
+  </div>
+  <div class="account">
+    <p>Operations: </p>
+    <a href="{% url 'Accounts:operationsOne' all_money.id 1 %}">All time</a>
+    <a href="{% url 'Accounts:operationsOne' all_money.id 2 %}">this month</a>
+    <a href="{% url 'Accounts:operationsOne' all_money.id 3 %}">previous month</a>
+  </div>
+  <div class="total">
+    <h2>Total Sum: {{ all_money.quantity_money }}</h2>
+  </div>
+  <div class="account">
+    <a href="{% url 'Accounts:operations' 1 %} ">All accounts</a>
+    {% for account in accounts %}
+      <a href="{% url 'Accounts:operationsOne' account.id 1 %}">{{ account.name }}</a>
+    {% endfor %}
+  </div>
+  <div>
+    {% for operation in operations %}
+      <div class="operation">
+        {{ operation.account.name }}
+        {{ operation.category }}
+        {{ operation.price }}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

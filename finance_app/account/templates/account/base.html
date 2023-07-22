@@ -5,11 +5,12 @@
     <title>Title</title>
     {% load static %}
     <link href="{% static 'account/base.css' %}" rel="stylesheet">
+    {% block style %} {% endblock %}
 </head>
 <body>
     <div class="board">
         <h4 style="display: inline;"><a href="{% url 'Accounts:accounts' %}">Home</a></h4>
-        <h4 style="display: inline;" align="right"><a href="{% url 'users:login' %}">Operations</a></h4>
+        <h4 style="display: inline;" align="right"><a href="{% url 'Accounts:operations' 1 %}">Operations</a></h4>
         <h4 style="display: inline;" align="right"><a href="{% url 'users:registration' %}">New Operation</a></h4>
         <h4 style="display: inline;" align="right"><a href="{% url 'users:registration' %}">Budgets</a></h4>
         <h4 style="display: inline;" align="right"><a href="{% url 'users:registration' %}">Profile</a></h4>
