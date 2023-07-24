@@ -68,3 +68,9 @@ class Operation(models.Model):
 
     def __str__(self):
         return f'account: {self.account}; category: {self.category}; price: {self.price}//// {self.pk}'
+
+
+class Limit(models.Model):
+    limit = models.FloatField(validators=[MinValueValidator(0)])
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)

@@ -19,7 +19,7 @@ class RegistrationUserView(View):
             User.objects.create_user(username=username, password=password)
             return render(request, "users/registration.html", {'form': form})
 
-        return render(request, "users/registration.html", {'form': UserForm()})
+        HttpResponseRedirect(reverse('users:login'))
 
 
 class LoginUserView(View):
@@ -37,9 +37,9 @@ class LoginUserView(View):
         else:
             form = LoginUserForm()
         context = {"form": form}
-        return render(request, 'users/login.html', context=context)
+        return HttpResponseRedirect(reverse('Accounts:accounts'))
 
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect(reverse('Accounts:accounts'))
+    return HttpResponseRedirect(reverse('Accounts:profile'))

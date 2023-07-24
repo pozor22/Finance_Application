@@ -8,6 +8,11 @@
     <a class="button" href="{% url 'Accounts:accounts' %}">My Accounts</a>
   </div>
   <div class="head">
-    <a class="buttonExit" href="{% url 'users:exit' %}">Exit</a>
+    {% if user.is_authenticated %}
+      <a class="buttonExit" href="{% url 'users:exit' %}">Exit</a>
+    {% else %}
+      <a class="button" href="{% url 'users:login' %}">Authorization</a>
+      <a class="button" href="{% url 'users:registration' %}">Registration</a>
+    {% endif %}
   </div>
 {% endblock %}

@@ -1,15 +1,17 @@
 from django.db.models import Sum
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.views import View
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
-from .models import Account, Operation, Category
+from .models import Account, Operation, Category, Limit
 from .forms import CreateOperationForm, CreateAccountForm
 from datetime import datetime
 from calendar import monthrange
+from braces.views import LoginRequiredMixin
 
 
-class AllAccountView(ListView):
+class AllAccountView(LoginRequiredMixin, ListView):
     model = Account
     template_name = 'account/AllAccount.html'
     context_object_name = 'accounts'
@@ -47,7 +49,7 @@ class AllAccountView(ListView):
 
 
 # time = 1 all operations, time = 2 operations in this month, time = 3 operations in this month - 1
-class AllOperationsView(ListView):
+class AllOperationsView(LoginRequiredMixin, ListView):
     model = Operation
     template_name = 'account/Operations.html'
     context_object_name = 'operations'
@@ -83,7 +85,7 @@ class AllOperationsView(ListView):
         return queryset
 
 
-class OperationsOneAccountView(View):
+class OperationsOneAccountView(LoginRequiredMixin, View):
     template_name = 'account/OperationsOneAccount.html'
 
     def get(self, request, *args, **kwargs):
@@ -121,7 +123,7 @@ class OperationsOneAccountView(View):
         return render(request, self.template_name, context)
 
 
-class CreateOperationView(CreateView):
+class CreateOperationView(LoginRequiredMixin, CreateView):
     form_class = CreateOperationForm
     template_name = 'account/CreateOperation.html'
     success_url = reverse_lazy('Accounts:accounts')
@@ -132,7 +134,7 @@ class CreateOperationView(CreateView):
         return context
 
 
-class CreateNewAccountView(CreateView):
+class CreateNewAccountView(LoginRequiredMixin, CreateView):
     form_class = CreateAccountForm
     template_name = 'account/CreateAccount.html'
     success_url = reverse_lazy('Accounts:accounts')
@@ -142,6 +144,21 @@ class CreateNewAccountView(CreateView):
         return super().form_valid(form)
 
 
+class LimitView(LoginRequiredMixin, ListView):
+    model = Limit
+    template_name = 'account/Limit.html'
+    context_object_name = 'limits'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self):
+        queryset = super(LimitView, self).get_queryset()
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+
 class ProfileView(View):
     template_name = 'account/profile.html'
 
@@ -149,7 +166,7 @@ class ProfileView(View):
         return render(request, self.template_name)
 
 
-class DeleteOperationView(View):
+class DeleteOperationView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         operation = Operation.objects.get(pk=pk)
