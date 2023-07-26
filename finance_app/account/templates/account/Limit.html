@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'account/base.html' %}
+{% block head %}
+{{ head }}
+{% endblock %}
+{% block style %}
 
-</body>
-</html>
+{% endblock %}
+{% block content %}
+  <div><a href="{% url 'Accounts:CreateLimit' %}">New Limit</a></div>
+  <div>
+      {% for limit in limits %}
+        <p> / {{ limit.limit }}   {{ limit.category }}</p>
+      {% endfor %}
+  </div>
+{% endblock %}

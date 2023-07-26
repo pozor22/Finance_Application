@@ -1,5 +1,7 @@
 {% extends 'account/base.html' %}
-
+{% block head %}
+{{ head }}
+{% endblock %}
 {% block content %}
   <div>
     <form action="{% url 'Accounts:CreateAccount' %}" method="post">

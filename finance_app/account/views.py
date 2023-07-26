@@ -1,11 +1,10 @@
 from django.db.models import Sum
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.views import View
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from .models import Account, Operation, Category, Limit
-from .forms import CreateOperationForm, CreateAccountForm
+from .forms import CreateOperationForm, CreateAccountForm, CreateLimitForm
 from datetime import datetime
 from calendar import monthrange
 from braces.views import LoginRequiredMixin
@@ -40,6 +39,7 @@ class AllAccountView(LoginRequiredMixin, ListView):
             maxx = 0
             keyy = ''
         context['top_spending'] = dict1
+        context['head'] = 'Accounts'
         return context
 
     def get_queryset(self):
@@ -58,6 +58,7 @@ class AllOperationsView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['all_money'] = Account.objects.filter(user=self.request.user).aggregate(Sum('quantity_money'))
         context['all_account'] = Account.objects.filter(user=self.request.user)
+        context['head'] = 'Operations'
         return context
 
     def get_queryset(self):
@@ -97,6 +98,7 @@ class OperationsOneAccountView(LoginRequiredMixin, View):
                 'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
                 .order_by('-id'),
                 'accounts': Account.objects.filter(user=self.request.user),
+                'head': 'operations',
             }
         elif time == 2:
             today = datetime.today()
@@ -108,6 +110,7 @@ class OperationsOneAccountView(LoginRequiredMixin, View):
                 'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
                 .filter(date__range=[first, last]).order_by('-id'),
                 'accounts': Account.objects.filter(user=self.request.user),
+                'head': 'operations',
             }
         elif time == 3:
             today = datetime.today()
@@ -119,6 +122,7 @@ class OperationsOneAccountView(LoginRequiredMixin, View):
                 'operations': Operation.objects.filter(account__user=self.request.user).filter(account__pk=pk)
                 .filter(date__range=[first, last]).order_by('-id'),
                 'accounts': Account.objects.filter(user=self.request.user),
+                'head': 'operations',
             }
         return render(request, self.template_name, context)
 
@@ -131,6 +135,7 @@ class CreateOperationView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateOperationView, self).get_context_data(**kwargs)
         context['form'].fields['account'].queryset = Account.objects.filter(user=self.request.user)
+        context['head'] = 'NewOperation'
         return context
 
 
@@ -138,6 +143,11 @@ class CreateNewAccountView(LoginRequiredMixin, CreateView):
     form_class = CreateAccountForm
     template_name = 'account/CreateAccount.html'
     success_url = reverse_lazy('Accounts:accounts')
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateNewAccountView, self).get_context_data(**kwargs)
+        context['head'] = 'NewAccount'
+        return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -151,6 +161,7 @@ class LimitView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['head'] = 'Limit'
         return context
 
     def get_queryset(self):
@@ -159,11 +170,27 @@ class LimitView(LoginRequiredMixin, ListView):
         return queryset
 
 
+class CreateNewLimitView(LoginRequiredMixin, CreateView):
+    form_class = CreateLimitForm
+    template_name = 'account/CreateLimit.html'
+    success_url = reverse_lazy('Accounts:Limit')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateNewLimitView, self).get_context_data(**kwargs)
+        context['form'].fields['category'].queryset = Category.objects.filter(TypeTransaction=True)
+        context['head'] = 'NewLimit'
+        return context
+
+
 class ProfileView(View):
     template_name = 'account/profile.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'head': 'Profile'})
 
 
 class DeleteOperationView(LoginRequiredMixin, View):

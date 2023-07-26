@@ -3,15 +3,11 @@
 {{ head }}
 {% endblock %}
 {% block style %}
-  <style>
-    .account{
-      text-align: center;
-    }
-  </style>
+
 {% endblock %}
 {% block content %}
   <div>
-    <form action="{% url 'Accounts:CreateOperation' %}" method="post">
+    <form action="{% url 'Accounts:CreateLimit' %}" method="post">
       {% csrf_token %}
       {{ form }}
       <input type="submit" value="Add">

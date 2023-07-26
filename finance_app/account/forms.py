@@ -1,5 +1,5 @@
 from django import forms
-from .models import Operation, Account
+from .models import Operation, Account, Limit
 
 
 class DateInput(forms.DateInput):
@@ -18,3 +18,9 @@ class CreateAccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = ('name', 'quantity_money', 'target', 'type')
+
+
+class CreateLimitForm(forms.ModelForm):
+    class Meta:
+        model = Limit
+        fields = ('limit', 'category')

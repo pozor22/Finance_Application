@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block head %}{% endblock %}</title>
     {% load static %}
     <link href="{% static 'account/base.css' %}" rel="stylesheet">
     {% block style %} {% endblock %}
@@ -12,7 +12,7 @@
         <a class="button" href="{% url 'Accounts:accounts' %}">Home</a>
         <a class="button" href="{% url 'Accounts:operations' 1 %}">Operations</a>
         <a class="button" href="{% url 'Accounts:CreateOperation' %}">New Operation</a>
-        <a class="button" href="{% url 'users:registration' %}">Budgets</a>
+        <a class="button" href="{% url 'Accounts:Limit' %}">Budgets</a>
         <a class="button" href="{% url 'Accounts:profile' %}">Profile</a>
     </div>
     <div>
